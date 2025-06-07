@@ -1,0 +1,157 @@
+import java.util.*;
+
+class Show {
+    String ShowTitle;
+    String ShowCategory;
+    String ShowStartTime;
+    int ShowRevenue;
+
+    public Show(String ShowTitle, String ShowCategory, String ShowStartTime, int ShowRevenue) {
+        this.ShowTitle = ShowTitle;
+        this.ShowCategory = ShowCategory;
+        this.ShowStartTime = ShowStartTime;
+        this.ShowRevenue = ShowRevenue;
+    }
+
+    public String toString() {
+        return "Show Title: " + ShowTitle + ", Category: " + ShowCategory + 
+               ", Show start time: " + ShowStartTime + ", Revenue: " + ShowRevenue;
+    }
+}
+
+class ShowsManagement {
+    private List<Show> shows = new ArrayList<>();
+
+    public void addShow(Show show) {
+        shows.add(show);
+        System.out.println("Added show: " + show.ShowTitle);
+    }
+
+    public void editShow(String title) {
+        Scanner scanner = new Scanner(System.in);
+
+        Optional<Show> showOptional = shows.stream()
+                                           .filter(s -> s.ShowTitle.equalsIgnoreCase(title))
+                                           .findFirst();
+
+        if (showOptional.isPresent()) {
+            Show show = showOptional.get();
+            System.out.println("Show found: " + show);
+
+            System.out.println("What do you want to change in this show? Choose the number.");
+            System.out.println("1- Edit title");
+            System.out.println("2- Edit start time");
+            System.out.println("3- Edit revenue");
+
+            int option = scanner.nextInt();
+            scanner.nextLine();  
+
+            switch (option) {
+                case 1:
+                    System.out.println("Enter the new title or keep empty if you do not want to change the title:");
+                    String newShowTitle = scanner.nextLine();
+                    if (!newShowTitle.isEmpty()) show.ShowTitle = newShowTitle;
+                    System.out.println("Updated show: " + show);
+                    break;
+
+                case 2:
+                    System.out.println("Enter the new start time or keep empty if you do not want to change the start time:");
+                    String newStartTime = scanner.nextLine();
+                    if (!newStartTime.isEmpty()) show.ShowStartTime = newStartTime;
+                    System.out.println("Updated show: " + show);
+                    break;
+
+                case 3:
+    System.out.println("Enter the new revenue or enter 0 if you want to keep it the same:");
+                    int newRevenue = scanner.nextInt();
+                    if (newRevenue != 0) show.ShowRevenue = newRevenue;
+                    System.out.println("Updated show: " + show);
+                    break;
+
+                default:
+                    System.out.println("Invalid option.");
+                    break;
+            }
+        } else {
+            System.out.println("Could not find the Show.");
+        }
+    }
+
+    public void listShows() {
+        if (shows.isEmpty()) {
+            System.out.println("No shows to show.");
+        } else {
+            System.out.println("List of shows:");
+            for (Show show : shows) {
+                System.out.println(show);
+            }
+        }
+    }
+
+    public void removeShow(String title) {
+        boolean removed = shows.removeIf(show -> show.ShowTitle.equalsIgnoreCase(title));
+        if (removed) {
+            System.out.println("Show removed.");
+        } else {
+            System.out.println("Show not found.");
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        ShowsManagement management = new ShowsManagement();
+        boolean exit = false;
+
+        while (!exit) {
+            System.out.println("What would you like to do?");
+            System.out.println("1- Add a Show");
+            System.out.println("2- Edit a Show title/start time/revenue");
+            System.out.println("3- Remove a Show");
+            System.out.println("4- List Shows");
+            System.out.println("5- Exit");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); 
+            switch (choice) {
+                case 1:
+           System.out.println("Enter show title, category, start time, and revenue:");
+                    String newTitle = scanner.nextLine();
+                    String newCategory = scanner.nextLine();
+                    String newStartTime = scanner.nextLine();
+                    int newRevenue = scanner.nextInt();
+                    Show newShow = new Show(newTitle, newCategory, newStartTime, newRevenue);
+                    management.addShow(newShow);
+                    break;
+
+                case 2:
+     System.out.println("Enter the title of the show to edit:");
+                    String editTitle = scanner.nextLine();
+                    management.editShow(editTitle);
+                    break;
+
+                case 3:
+                 System.out.println("Enter the title of the show to remove:");
+                    String removeTitle = scanner.nextLine();
+                    management.removeShow(removeTitle);
+                    break;
+
+                case 4:
+                      management.listShows();
+                    break;
+
+                case 5:
+                 exit = true;
+                    System.out.println("Exiting...");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice! Please try again.");
+                    break;
+            }
+        }
+
+        scanner.close();
+    }
+}
